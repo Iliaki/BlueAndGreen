@@ -170,26 +170,34 @@ public class RussianRouletteMicrogame : MonoBehaviour
         if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
+        // UI / mensajes
+        // ...
+
+        // Avisar al GameManager
+        if (GameManager.Instance != null)
         {
-            resultText.SetText("<color=green>¡Te salvaste!</color>");
+            GameManager.Instance.OnMicrogameEnd(true);
         }
 
-        Debug.Log("RussianRoulette: WIN");
+        // (Opcional) seguir usando el UnityEvent si quieres
         onMicrogameEnd?.Invoke(true);
     }
+
+
 
     private void Lose()
     {
         if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
+        // UI / mensajes
+        // ...
+
+        if (GameManager.Instance != null)
         {
-            resultText.SetText("<color=red>¡Bala perdida...!</color>");
+            GameManager.Instance.OnMicrogameEnd(false);
         }
 
-        Debug.Log("RussianRoulette: LOSE");
         onMicrogameEnd?.Invoke(false);
     }
 }

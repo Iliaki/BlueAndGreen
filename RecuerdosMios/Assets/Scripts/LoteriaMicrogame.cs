@@ -154,24 +154,37 @@ public class LoteriaMicrogame : MonoBehaviour
 
     private void Win()
     {
+        if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
-            resultText.SetText("<color=green>¡Bien hecho!</color>");
+        // UI / mensajes
+        // ...
 
-        Debug.Log("Microjuego Lotería: WIN");
+        // Avisar al GameManager
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnMicrogameEnd(true);
+        }
+
+        // (Opcional) seguir usando el UnityEvent si quieres
         onMicrogameEnd?.Invoke(true);
-        // Aquí luego puedes hacer una pequeña pausa o cargar otra escena
     }
+
+
 
     private void Lose()
     {
+        if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
-            resultText.SetText("<color=red>¡Perdiste!</color>");
+        // UI / mensajes
+        // ...
 
-        Debug.Log("Microjuego Lotería: LOSE");
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnMicrogameEnd(false);
+        }
+
         onMicrogameEnd?.Invoke(false);
     }
 }

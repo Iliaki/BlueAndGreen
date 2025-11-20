@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeLimit: 7
-  spinSpeed: 200
+  spinSpeed: 300
   wheelImage: {fileID: 1369616442}
   boards:
   - boardName: ruleta2_bala2
@@ -279,7 +279,7 @@ MonoBehaviour:
     losingSectors: 0100000004000000
     angleOffset: 0
   - boardName: ruleta2_bala2
-    wheelSprite: {fileID: 21300000, guid: ea1b1d351ffef7d4585a77481e817265, type: 3}
+    wheelSprite: {fileID: 21300000, guid: 09ce8cc9b2863374b8ac5fd42469003c, type: 3}
     segments: 6
     losingSectors: 0100000002000000030000000400000005000000
     angleOffset: 0
