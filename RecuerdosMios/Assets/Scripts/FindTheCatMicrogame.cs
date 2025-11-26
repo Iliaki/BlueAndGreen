@@ -132,29 +132,44 @@ public class FindTheCatMicrogame : MonoBehaviour
         Win();
     }
 
+
     private void Win()
     {
+        if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
+        // UI / mensajes
+        // ...
+
+        // Avisar al GameManager
+        if (GameManager.Instance != null)
         {
-            resultText.SetText("<color=green>¡Lo encontraste!</color>");
+            GameManager.Instance.OnMicrogameEnd(true);
         }
 
-        Debug.Log("FindTheCat: WIN");
+        // (Opcional) seguir usando el UnityEvent si quieres
         onMicrogameEnd?.Invoke(true);
     }
 
+
+  
     private void Lose()
     {
+        if (isFinished) return;
         isFinished = true;
 
-        if (resultText != null)
+        // UI / mensajes
+        // ...
+
+        if (GameManager.Instance != null)
         {
-            resultText.SetText("<color=red>Se acabó el tiempo...</color>");
+            GameManager.Instance.OnMicrogameEnd(false);
         }
 
-        Debug.Log("FindTheCat: LOSE");
         onMicrogameEnd?.Invoke(false);
     }
+
 }
+
+
+
