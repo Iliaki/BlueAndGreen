@@ -201,6 +201,5 @@ public class SmashBarController : MonoBehaviour
 
         onMicrogameEnd?.Invoke(false);
     }
-
 }
 
