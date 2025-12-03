@@ -252,10 +252,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   livesPerRound: 2
   microgamesPerRound: 3
-  preMicrogameSceneName: PreMicro
-  postMicrogameSceneName: PostMicro
-  roundWinSceneName: RoundWin
-  roundLoseSceneName: RoundLose
   microgameSceneNames:
   - loteria
   - ruleta
