@@ -3,24 +3,39 @@ using TMPro;
 
 public class PreMicroController : MonoBehaviour
 {
-    public TextMeshProUGUI titleText;
+    public TextMeshProUGUI titleText; // asigna desde el inspector
 
     void Start()
     {
-        if (GameManager.Instance != null && titleText != null)
+        var gm = GameManager.Instance;
+
+        if (gm == null)
         {
-            string sceneName = GameManager.Instance.NextMicrogameScene;
-            // Aquí puedes mapear nombres feos de escena a textos bonitos
-            // Por ahora, lo mostramos directo:
+            Debug.LogError("PreMicroController: No hay GameManager.Instance");
+            return;
+        }
+
+        if (titleText != null)
+        {
+            string sceneName = gm.NextMicrogameScene;
+
+            // Si quieres, aqui puedes mapear a nombres bonitos.
+            // Por ahora lo mostramos tal cual:
             titleText.SetText($"Siguiente microjuego: {sceneName}");
         }
     }
 
     public void OnContinueButton()
     {
-        if (GameManager.Instance != null)
+        var gm = GameManager.Instance;
+
+        if (gm == null)
         {
-            GameManager.Instance.StartSelectedMicrogame();
+            Debug.LogError("PreMicroController: No hay GameManager.Instance al presionar continuar");
+            return;
         }
+
+        Debug.Log("PreMicroController: Continuar a cargando " + gm.NextMicrogameScene);
+        gm.StartSelectedMicrogame();
     }
 }
