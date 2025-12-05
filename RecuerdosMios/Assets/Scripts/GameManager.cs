@@ -10,13 +10,30 @@ public class GameManager : MonoBehaviour
     public int livesPerRound = 2;          // Vidas por ronda
     public int microgamesPerRound = 3;     // Cuántos microjuegos por ronda
 
+    [Header("Escenas intermedias")]
+    public string preMicrogameSceneName = "PreMicro";
+    public string postMicrogameSceneName = "PostMicro";
+    public string roundWinSceneName = "RoundWin";
+    public string roundLoseSceneName = "RoundLose";
+
     [Header("Escenas de microjuegos")]
     public List<string> microgameSceneNames = new List<string>
     {
-        "MG_Loteria",
-        "MG_Ruleta",
-        "MG_SmashBar"
+        "loteria",
+        "ruleta",
+        "perroCereal"
     };
+
+    // Estado interno extra
+    private string nextMicrogameScene;
+    private bool lastMicrogameWin;
+
+    // Propiedades para que otras escenas lean info
+    public int CurrentLives => currentLives;
+    public int WinsThisRound => winsThisRound;
+    public int GamesPlayedThisRound => gamesPlayedThisRound;
+    public bool LastMicrogameWin => lastMicrogameWin;
+    public string NextMicrogameScene => nextMicrogameScene; // útil para PreMicro
 
     private int currentLives;
     private int winsThisRound;
@@ -44,9 +61,14 @@ public class GameManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    private void OnDestroy()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (SceneManager.GetActiveScene().name == "MainGame")
+        if (scene.name == "MainGame")
         {
             StartNewRound();
         }
@@ -63,13 +85,13 @@ public class GameManager : MonoBehaviour
         // Copia de la lista de microjuegos para no repetir
         availableMicrogames = new List<string>(microgameSceneNames);
 
-        LoadNextMicrogame();
+        PrepareNextMicrogame();
     }
 
-    private void LoadNextMicrogame()
+    private void PrepareNextMicrogame()
     {
-        // ¿Ya se jugaron los microjuegos necesarios?
-        if (gamesPlayedThisRound >= microgamesPerRound)
+        // ¿Ya se jugaron los microjuegos necesarios o no hay vidas?
+        if (gamesPlayedThisRound >= microgamesPerRound || currentLives <= 0)
         {
             EndRound();
             return;
@@ -84,17 +106,33 @@ public class GameManager : MonoBehaviour
 
         // Elegir un microjuego aleatorio sin repetir
         int index = Random.Range(0, availableMicrogames.Count);
-        string sceneName = availableMicrogames[index];
+        nextMicrogameScene = availableMicrogames[index];
         availableMicrogames.RemoveAt(index);
 
-        Debug.Log($"Cargando microjuego: {sceneName}");
-        SceneManager.LoadScene(sceneName);
+        Debug.Log($"Próximo microjuego: {nextMicrogameScene}");
+
+        // En vez de cargar el microjuego directo, cargamos la escena previa
+        SceneManager.LoadScene(preMicrogameSceneName);
+    }
+
+    public void StartSelectedMicrogame()
+    {
+        if (!string.IsNullOrEmpty(nextMicrogameScene))
+        {
+            Debug.Log($"Cargando microjuego real: {nextMicrogameScene}");
+            SceneManager.LoadScene(nextMicrogameScene);
+        }
+        else
+        {
+            Debug.LogError("No hay microjuego pendiente para cargar.");
+        }
     }
 
     // Esta función la llamarán los microjuegos al terminar
     public void OnMicrogameEnd(bool win)
     {
         gamesPlayedThisRound++;
+        lastMicrogameWin = win;
 
         if (win)
         {
@@ -107,20 +145,20 @@ public class GameManager : MonoBehaviour
             Debug.Log($"Microjuego perdido. Vidas restantes: {currentLives}");
         }
 
-        // ¿Se acabaron las vidas?
-        if (currentLives <= 0)
-        {
-            Debug.Log("Se acabaron las vidas.");
-            EndRound();
-        }
-        else if (gamesPlayedThisRound >= microgamesPerRound)
+        // Siempre, después de un microjuego, vamos a la escena de resumen
+        SceneManager.LoadScene(postMicrogameSceneName);
+    }
+
+    public void ContinueAfterSummary()
+    {
+        // ¿Se acabaron las vidas o ya jugamos todos los microjuegos?
+        if (currentLives <= 0 || gamesPlayedThisRound >= microgamesPerRound)
         {
             EndRound();
         }
         else
         {
-            // Cargar el siguiente microjuego
-            LoadNextMicrogame();
+            PrepareNextMicrogame();
         }
     }
 
@@ -133,18 +171,15 @@ public class GameManager : MonoBehaviour
         if (roundWon)
         {
             Debug.Log($"Ronda GANADA. Ganaste {winsThisRound} de {microgamesPerRound}.");
-            // Aquí luego: pasar a ronda 2, aumentar dificultad, etc.
+            SceneManager.LoadScene(roundWinSceneName);
         }
         else
         {
             Debug.Log($"Ronda PERDIDA. Ganaste {winsThisRound} de {microgamesPerRound}.");
+            SceneManager.LoadScene(roundLoseSceneName);
         }
 
-        // Por ahora: regresar al menú principal
-        SceneManager.LoadScene("MainMenu");
-
-        // Nota: el GameManager sigue vivo (DontDestroyOnLoad),
-        // así que cuando vuelvas de nuevo a MainGame, no necesitas otro.
+        // El GameManager sigue vivo (DontDestroyOnLoad)
+        // y se reusará si volvemos a MainGame.
     }
 }
-
