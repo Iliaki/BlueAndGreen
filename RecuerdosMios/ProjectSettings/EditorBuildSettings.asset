@@ -30,6 +30,18 @@ EditorBuildSettings:
     path: Assets/Scenes/MainGame.unity
     guid: 6b2eec87ac822c148ae05e4945393922
   - enabled: 1
+    path: Assets/Scenes/PreMicro.unity
+    guid: 41ce167ac577179479d2e37edf00ff08
+  - enabled: 1
+    path: Assets/Scenes/PostMicro.unity
+    guid: 5c48aff1696c8064d9225e9393dccfb1
+  - enabled: 1
     path: Assets/Scenes/ruleta.unity
     guid: 93a4c1b194e7f82499a56a8ba12cc186
+  - enabled: 1
+    path: Assets/Scenes/RoundWin.unity
+    guid: 4666c42357d2aea42ae688a389960f60
+  - enabled: 1
+    path: Assets/Scenes/RoundLose.unity
+    guid: ee6c95b6abc089a459b937743fcad279
   m_configObjects: {}
