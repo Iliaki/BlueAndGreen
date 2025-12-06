@@ -1,12 +1,22 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using UnityEngine.Events;
 
 public class QTEKeySequence : MonoBehaviour
 {
-    [Header("UI")]
+    [Header("UI principal")]
     public Image keyImage;            // Imagen de la tecla actual
     public RectTransform spawnArea;   // Área donde puede aparecer la tecla
+
+    [Header("Timer")]
+    public Image timerFill;           // Image (Filled) para la barra de tiempo
+    public float timeLimit = 5f;      // Tiempo máximo del microjuego (segundos)
+
+    [Header("Textos (opcional)")]
+    public TextMeshProUGUI instructionText;
+    public TextMeshProUGUI resultText;
 
     [Header("Sprites por tecla")]
     public Sprite TeclaM;
@@ -22,22 +32,39 @@ public class QTEKeySequence : MonoBehaviour
     [Tooltip("Si es true, cualquier tecla incorrecta se considera fallo inmediato. Si es false, se ignoran las teclas incorrectas.")]
     public bool loseOnWrongKey = false;
 
+    [Header("Integración GameManager")]
+    public UnityEvent<bool> onMicrogameEnd;
+
     // Estado interno
     private List<KeyCode> sequence = new List<KeyCode>();
     private int currentIndex = 0;
     private bool finished = false;
+    private float currentTime;
 
     void Start()
     {
         GenerateRandomSequence();
         currentIndex = 0;
         UpdateKeyIcon();
+
+        // Timer
+        currentTime = timeLimit;
+        if (timerFill != null)
+            timerFill.fillAmount = 1f;
+
+        // Texto de instrucciones
+        if (instructionText != null)
+            instructionText.SetText("Pulsa las teclas en el orden correcto");
+
+        if (resultText != null)
+            resultText.SetText("");
     }
 
     void Update()
     {
         if (finished) return;
 
+        // Entrada de teclado
         if (Input.anyKeyDown)
         {
             if (Input.GetKeyDown(KeyCode.M)) HandleKeyPress(KeyCode.M);
@@ -49,6 +76,16 @@ public class QTEKeySequence : MonoBehaviour
             {
                 Fail();
             }
+        }
+
+        // Timer
+        currentTime -= Time.deltaTime;
+        if (timerFill != null)
+            timerFill.fillAmount = Mathf.Clamp01(currentTime / timeLimit);
+
+        if (currentTime <= 0f && !finished)
+        {
+            Fail();
         }
     }
 
@@ -77,6 +114,7 @@ public class QTEKeySequence : MonoBehaviour
             {
                 Fail();
             }
+            // si loseOnWrongKey es false, simplemente ignoramos la tecla
         }
     }
 
@@ -160,32 +198,58 @@ public class QTEKeySequence : MonoBehaviour
             return;
         }
 
-        // Trabajamos en coordenadas locales de 'area'
-        Rect rect = area.rect; // rect.xMin/xMax/yMin/yMax, con origen en el pivot
+        Rect rect = area.rect; // coordenadas locales de 'area'
 
         float x = Random.Range(rect.xMin, rect.xMax);
         float y = Random.Range(rect.yMin, rect.yMax);
 
-        // Si el keyImage es hijo directo de 'area', usamos anchoredPosition
         keyRect.anchoredPosition = new Vector2(x, y);
     }
 
     void Win()
     {
+        if (finished) return;
         finished = true;
+
         Debug.Log("QTE completado: todas las teclas correctas.");
+
+        if (resultText != null)
+            resultText.SetText("<color=green>¡Completaste la secuencia!</color>");
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnMicrogameEnd(true);
+
+        onMicrogameEnd?.Invoke(true);
     }
 
     void Fail()
     {
+        if (finished) return;
         finished = true;
-        Debug.Log("QTE fallado: tecla incorrecta.");
+
+        Debug.Log("QTE fallado: tecla incorrecta o tiempo agotado.");
+
+        if (resultText != null)
+            resultText.SetText("<color=red>Fallaste la secuencia...</color>");
+
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnMicrogameEnd(false);
+
+        onMicrogameEnd?.Invoke(false);
     }
 
     public void ResetQTE()
     {
         finished = false;
         currentIndex = 0;
+        currentTime = timeLimit;
+
+        if (timerFill != null)
+            timerFill.fillAmount = 1f;
+
+        if (resultText != null)
+            resultText.SetText("");
+
         GenerateRandomSequence();
         UpdateKeyIcon();
     }

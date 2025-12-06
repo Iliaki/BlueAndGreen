@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Configuración de la ronda")]
     public int livesPerRound = 2;          // Vidas por ronda
-    public int microgamesPerRound = 3;     // Cuántos microjuegos por ronda
+    public int microgamesPerRound = 5;     // Cuántos microjuegos por ronda
 
     [Header("Escenas intermedias")]
     public string preMicrogameSceneName = "PreMicro";
@@ -21,7 +21,9 @@ public class GameManager : MonoBehaviour
     {
         "loteria",
         "ruleta",
-        "perroCereal"
+        "perroCereal",
+        "MarcasCigarros",
+        "encuentraGato"
     };
 
     // Estado interno extra
