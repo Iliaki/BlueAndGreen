@@ -251,9 +251,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   livesPerRound: 2
-  microgamesPerRound: 3
+  microgamesPerRound: 5
+  preMicrogameSceneName: PreMicro
+  postMicrogameSceneName: PostMicro
+  roundWinSceneName: RoundWin
+  roundLoseSceneName: RoundLose
   microgameSceneNames:
   - loteria
   - ruleta
   - perroCereal
   - encuentraGato
+  - MarcasCigarros

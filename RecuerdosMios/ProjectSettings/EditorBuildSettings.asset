@@ -44,4 +44,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/RoundLose.unity
     guid: ee6c95b6abc089a459b937743fcad279
+  - enabled: 1
+    path: Assets/Scenes/MarcasCigarros.unity
+    guid: d96edce6d1007724e9ce1b23e5ea4536
   m_configObjects: {}
