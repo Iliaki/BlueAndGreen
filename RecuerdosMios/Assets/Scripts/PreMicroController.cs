@@ -6,16 +6,21 @@ public class PreMicroController : MonoBehaviour
 {
     [Header("UI")]
     public TextMeshProUGUI titleText;
-
-    [Header("Icono de tipo de entrada")]
     public Image inputIcon;
+
+    [Header("Timer visual")]
+    public Image timerFill;       // Image (Filled)
+    public float preDuration = 3f;
 
     // Sprites para cada tipo de control
     public Sprite spriteMouse;
     public Sprite spriteSpacebar;
     public Sprite spriteFullKeyboard;
     public Sprite spriteWASD;
-    public Sprite spriteMixed; // opcional, por si quieres algo generico
+    public Sprite spriteMixed;
+
+    private float currentTime;
+    private bool advanced = false;
 
     void Start()
     {
@@ -29,37 +34,65 @@ public class PreMicroController : MonoBehaviour
 
         string sceneName = gm.NextMicrogameScene;
 
-        // 1) Texto del microjuego
+        // Texto del microjuego
         if (titleText != null)
         {
             string niceName = GetNiceNameForScene(sceneName);
             titleText.SetText("Siguiente microjuego: " + niceName);
         }
 
-        // 2) Icono segun tipo de entrada
+        // Icono de tipo de entrada
         if (inputIcon != null)
         {
             inputIcon.sprite = GetInputSpriteForScene(sceneName);
             inputIcon.enabled = (inputIcon.sprite != null);
         }
+
+        // Timer
+        currentTime = preDuration;
+        if (timerFill != null)
+        {
+            timerFill.type = Image.Type.Filled;
+            timerFill.fillAmount = 1f;
+        }
     }
 
-    public void OnContinueButton()
+    void Update()
     {
+        if (advanced) return;
+
+        currentTime -= Time.deltaTime;
+
+        if (timerFill != null && preDuration > 0f)
+        {
+            float t = Mathf.Clamp01(currentTime / preDuration);
+            timerFill.fillAmount = t;
+        }
+
+        if (currentTime <= 0f)
+        {
+            AdvanceToMicrogame();
+        }
+    }
+
+    void AdvanceToMicrogame()
+    {
+        if (advanced) return;
+        advanced = true;
+
         var gm = GameManager.Instance;
         if (gm == null)
         {
-            Debug.LogError("PreMicroController: No hay GameManager.Instance al presionar continuar");
+            Debug.LogError("PreMicroController: No hay GameManager.Instance al avanzar");
             return;
         }
 
-        Debug.Log("PreMicroController: Continuar -> cargando " + gm.NextMicrogameScene);
+        Debug.Log("PreMicroController: tiempo agotado, cargando " + gm.NextMicrogameScene);
         gm.StartSelectedMicrogame();
     }
 
-    // ----------------- Helpers -----------------
+    // -------- Helpers --------
 
-    // Nombre de escena -> nombre "bonito" para mostrar
     string GetNiceNameForScene(string sceneName)
     {
         switch (sceneName)
@@ -69,9 +102,9 @@ public class PreMicroController : MonoBehaviour
             case "ruleta":
                 return "Ruleta rusa";
             case "perroCereal":
-                return "Aporrea al perro";
+                return "Perro y cereal";
             case "MarcasCigarros":
-                return "Di 5 marcas de cigarros";
+                return "Marcas de cigarros";
             case "encuentraGato":
                 return "Encuentra al michi";
             default:
@@ -79,37 +112,21 @@ public class PreMicroController : MonoBehaviour
         }
     }
 
-    // Nombre de escena -> sprite de tipo de input
     Sprite GetInputSpriteForScene(string sceneName)
     {
         switch (sceneName)
         {
             case "loteria":
-                // Click rapido en la carta -> mouse
                 return spriteMouse;
-
             case "ruleta":
-                // Ruleta rusa -> barra espaciadora
                 return spriteSpacebar;
-
             case "perroCereal":
-                // Golpear barra muchas veces -> barra espaciadora
                 return spriteSpacebar;
-
             case "MarcasCigarros":
-                // QTE de teclas -> teclado completo
                 return spriteFullKeyboard;
-
             case "encuentraGato":
-                // Buscar al gato con click -> mouse
                 return spriteMouse;
-
-            // Ejemplo de microjuego WASD:
-            // case "NombreEscenaWASD":
-            //     return spriteWASD;
-
             default:
-                // Icono generico si no sabemos
                 return spriteMixed;
         }
     }
