@@ -210,7 +210,7 @@ MonoBehaviour:
     button: {fileID: 1934930946}
   boardImage: {fileID: 1047253428}
   boards:
-  - boardName: normal
+  - boardName: loteria1
     boardSprite: {fileID: 21300000, guid: 2b97527c7bf1a094eaf439dee62d58d7, type: 3}
     description: 
     cardNames:
@@ -221,20 +221,20 @@ MonoBehaviour:
     - El Cotorro
     - El Tambor
     - El Camaron
-    - Las Jaras
-    - El musico
+    - La flecha
+    - La guitarra
     - "La ara\xF1a"
-    - El Apache
+    - La pluma
     - El nopal
     - El alacran
     - La rosa
     - La calavera
     - La corona
-    - La chalupa
+    - El sombrero
     - El pino
     - El pescado
     - La palma
-  - boardName: espejo
+  - boardName: loteria2
     boardSprite: {fileID: 21300000, guid: a3d5f55796708524bb3e1793f5fb3a09, type: 3}
     description: 
     cardNames:
@@ -244,44 +244,44 @@ MonoBehaviour:
     - La mano
     - El pajaro
     - "La ara\xF1a"
-    - El musico
-    - Las jaras
+    - La guitarra
+    - La flecha
     - El camaron
     - El tambor
     - La calavera
     - La rosa
     - El alacran
     - El Nopal
-    - El Apache
+    - La pluma
     - La palma
     - El pescado
     - El pino
-    - La chalupa
+    - El sombrero
     - La corona
-  - boardName: volteado
+  - boardName: loteria3
     boardSprite: {fileID: 21300000, guid: a03eb5024ba3bde48b9cf8ffb6e9cb58, type: 3}
     description: 
     cardNames:
     - La corona
-    - La chalupa
+    - El sombrero
     - El pino
     - El pescado
     - La palma
-    - El apache
+    - La pluma
     - El nopal
     - El alacran
     - La rosa
     - La calavera
     - El tambor
     - El camaron
-    - Las jaras
-    - EL musico
+    - La flecha
+    - La guitarra
     - "La ara\xF1a"
     - El pajaro
     - La mano
     - La bota
     - La luna
-    - EL cotorro
+    - El cotorro
   instructionText: {fileID: 1456981719}
   timerFill: {fileID: 222890981}
   resultText: {fileID: 2027872459}

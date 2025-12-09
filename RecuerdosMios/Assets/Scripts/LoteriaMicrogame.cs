@@ -117,7 +117,7 @@ public class LoteriaMicrogame : MonoBehaviour
 
         if (instructionText != null)
         {
-            instructionText.SetText($"Pon el frijol en: <b>{targetName}</b>");
+            instructionText.SetText($"¡ <b>{targetName}</b> !");
         }
     }
 
